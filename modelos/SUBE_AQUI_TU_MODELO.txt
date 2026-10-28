@@ -1,0 +1,1 @@
+Sube aquí tus archivos .glb. Para la primera prueba, llama al modelo molar.glb.

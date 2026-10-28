@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Visor 3D dental</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body>
+  <main class="page">
+    <section class="viewer-card" aria-label="Visor de modelo dental 3D">
+      <div class="viewer-heading">
+        <h1 id="model-title">Modelo dental 3D</h1>
+        <p id="model-instructions">Arrastra para girar · Usa la rueda o pellizca para ampliar</p>
+      </div>
+
+      <model-viewer
+        id="dental-model"
+        src="modelos/molar.glb"
+        alt="Modelo anatómico dental en tres dimensiones"
+        camera-controls
+        touch-action="pan-y"
+        interaction-prompt="none"
+        shadow-intensity="0.8"
+        exposure="1"
+        environment-image="neutral"
+        ar="false"
+        loading="eager">
+        <div slot="poster" class="loading">Cargando modelo 3D…</div>
+        <div slot="error" class="error">
+          No se ha podido cargar el modelo. Comprueba que el archivo exista en la carpeta
+          <code>modelos</code>, que el nombre coincida exactamente y que sea un archivo GLB válido.
+        </div>
+      </model-viewer>
+
+      <div class="controls" aria-label="Controles del visor">
+        <button type="button" id="reset-view">Restablecer vista</button>
+        <button type="button" id="toggle-rotation" aria-pressed="false">Activar giro automático</button>
+      </div>
+      <p class="note">Modelo interactivo sin etiquetas anatómicas añadidas por este visor.</p>
+    </section>
+  </main>
+
+  <script>
+    // OPCIONAL: cambia el nombre del archivo en la URL:
+    // https://TUUSUARIO.github.io/TUREPOSITORIO/?modelo=molar.glb
+    // El archivo debe estar dentro de la carpeta "modelos".
+    const params = new URLSearchParams(window.location.search);
+    const requestedModel = params.get("modelo");
+    const allowedName = /^[a-zA-Z0-9._-]+\.glb$/i;
+
+    if (requestedModel && allowedName.test(requestedModel)) {
+      document.getElementById("dental-model").src = "modelos/" + requestedModel;
+      document.getElementById("model-title").textContent = "Modelo dental 3D";
+    }
+
+    const viewer = document.getElementById("dental-model");
+    document.getElementById("reset-view").addEventListener("click", () => {
+      viewer.cameraOrbit = "auto auto auto";
+      viewer.cameraTarget = "auto auto auto";
+      viewer.fieldOfView = "auto";
+    });
+
+    const rotationButton = document.getElementById("toggle-rotation");
+    rotationButton.addEventListener("click", () => {
+      const enabled = viewer.hasAttribute("auto-rotate");
+      if (enabled) {
+        viewer.removeAttribute("auto-rotate");
+        rotationButton.textContent = "Activar giro automático";
+        rotationButton.setAttribute("aria-pressed", "false");
+      } else {
+        viewer.setAttribute("auto-rotate", "");
+        rotationButton.textContent = "Detener giro automático";
+        rotationButton.setAttribute("aria-pressed", "true");
+      }
+    });
+  </script>
+</body>
+</html>
